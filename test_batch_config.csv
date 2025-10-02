@@ -1,0 +1,2 @@
+sample_name,input_fasta,reference_fasta,gene_start,gene_length
+A1_test,L1e8e291d_sample_A1_downsampled_10x.fa,sp23_dna.fa,ATGCCCAAAATAAATACATTTAATT,1233
