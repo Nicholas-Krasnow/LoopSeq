@@ -10,7 +10,6 @@ import os
 import sys
 import argparse
 from collections import Counter, defaultdict
-from typing import List, Tuple, Dict
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,7 +20,7 @@ from Bio.SeqUtils import seq1
 import warnings
 warnings.filterwarnings('ignore')
 
-def translate_dna(sequence: str) -> str:
+def translate_dna(sequence):
     """Translate DNA sequence to amino acid sequence using standard genetic code."""
     # Remove any non-DNA characters and convert to uppercase
     clean_seq = ''.join(c for c in sequence.upper() if c in 'ATCG')
@@ -38,7 +37,7 @@ def translate_dna(sequence: str) -> str:
     protein = seq_obj.translate()
     return str(protein)
 
-def find_gene_start_with_alignment(query_seq: str, gene_start: str, max_mismatches: int = 2) -> Tuple[str, int, int, bool]:
+def find_gene_start_with_alignment(query_seq, gene_start, max_mismatches=2):
     """
     Find gene_start in query sequence with alignment, allowing for mismatches.
     Returns (aligned_query, start_pos, end_pos, is_reverse_complement).
@@ -81,7 +80,7 @@ def find_gene_start_with_alignment(query_seq: str, gene_start: str, max_mismatch
     
     return "", -1, -1, False
 
-def extract_subread_with_alignment(query_seq: str, gene_start: str, gene_length: int, max_mismatches: int = 2) -> Tuple[str, int, bool]:
+def extract_subread_with_alignment(query_seq, gene_start, gene_length, max_mismatches=2):
     """
     Extract subread using gene_start alignment.
     Returns (subread, mismatches, is_reverse_complement).
@@ -114,7 +113,7 @@ def extract_subread_with_alignment(query_seq: str, gene_start: str, gene_length:
     
     return subread, mismatches, is_reverse
 
-def compare_subread_to_reference(subread: str, reference_seq: str, min_identity: float = 0.9) -> Tuple[str, str, int, int, float]:
+def compare_subread_to_reference(subread, reference_seq, min_identity=0.9):
     """
     Compare subread directly to reference sequence without alignment.
     Returns (ref_aligned, subread_aligned, start, end, identity).
@@ -146,7 +145,7 @@ def compare_subread_to_reference(subread: str, reference_seq: str, min_identity:
     else:
         return "", "", 0, 0, 0.0
 
-def find_aa_mutations(ref_aa: str, query_aa: str, start_pos: int) -> List[Tuple[int, str, str]]:
+def find_aa_mutations(ref_aa, query_aa, start_pos):
     """
     Find amino acid mutations between reference and query sequences.
     Returns list of (position, reference_aa, mutated_aa) tuples.
@@ -163,7 +162,7 @@ def find_aa_mutations(ref_aa: str, query_aa: str, start_pos: int) -> List[Tuple[
     
     return mutations
 
-def run_frequency_filtering(all_mutations: List[List[Tuple[int, str, str]]], min_frequency: float = 0.05) -> List[int]:
+def run_frequency_filtering(all_mutations, min_frequency=0.05):
     """Filter positions by mutation frequency and return list of positions that pass the filter."""
     print("Starting position frequency filtering...")
     
@@ -183,17 +182,17 @@ def run_frequency_filtering(all_mutations: List[List[Tuple[int, str, str]]], min
             filtered_positions.append(pos)
     
     n_positions = len(filtered_positions)
-    print(f"Position filtering: {len(position_counts)} total positions, {n_positions} positions with mutations in >{min_frequency*100:.1f}% of reads")
+    print("Position filtering: {0} total positions, {1} positions with mutations in >{2:.1f}% of reads".format(len(position_counts), n_positions, min_frequency*100))
     
     if n_positions < 2:
         print("Insufficient positions for pair analysis after filtering")
-        print(f"Need at least 2 positions with >{min_frequency*100:.1f}% mutation frequency")
+        print("Need at least 2 positions with >{0:.1f}% mutation frequency".format(min_frequency*100))
         return []
     
-    print(f"Frequency filtering completed: {n_positions} positions passed filter")
+    print("Frequency filtering completed: {0} positions passed filter".format(n_positions))
     return filtered_positions
 
-def format_mutation_label(mutation_label: str, reference_seq: str = None) -> str:
+def format_mutation_label(mutation_label, reference_seq=None):
     """Format mutation label from Pos161_I-Pos224_S to S161I-F224S format."""
     if not reference_seq or 'Pos' not in mutation_label:
         return mutation_label
@@ -210,15 +209,15 @@ def format_mutation_label(mutation_label: str, reference_seq: str = None) -> str
             # Get reference amino acid at this position
             if pos_idx < len(reference_seq):
                 ref_aa = reference_seq[pos_idx]
-                formatted_parts.append(f"{ref_aa}{pos_num}{mut_aa}")
+                formatted_parts.append("{0}{1}{2}".format(ref_aa, pos_num, mut_aa))
             else:
-                formatted_parts.append(f"X{pos_num}{mut_aa}")
+                formatted_parts.append("X{0}{1}".format(pos_num, mut_aa))
         else:
             formatted_parts.append(part)
     
     return '-'.join(formatted_parts)
 
-def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtered_positions: List[int], min_frequency: float = 0.05, reference_seq: str = None):
+def plot_observed_vs_expected(mutation_counts, output_dir, filtered_positions, min_frequency=0.05, reference_seq=None):
     """Plot observed vs expected frequency for mutation pairs using only DCA-filtered positions."""
     print("Starting observed vs expected frequency calculation...")
     
@@ -253,7 +252,7 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
         print("Insufficient positions passed frequency filter for pair analysis (need at least 2).")
         return
     
-    print(f"Analyzing mutation pairs for {len(filtered_positions)} DCA-filtered positions")
+    print("Analyzing mutation pairs for {0} DCA-filtered positions".format(len(filtered_positions)))
     
     # Iterate over all unique pairs of filtered positions
     for i in range(len(filtered_positions)):
@@ -285,8 +284,8 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
                     
                     observed_freqs.append(observed_freq)
                     expected_freqs.append(expected_freq)
-                    pair_labels.append(f"Pos{pos1}_{mut1}-Pos{pos2}_{mut2}")
-                    position_pairs.append(f"Pos{pos1}-Pos{pos2}")
+                    pair_labels.append("Pos{0}_{1}-Pos{2}_{3}".format(pos1, mut1, pos2, mut2))
+                    position_pairs.append("Pos{0}-Pos{1}".format(pos1, pos2))
     
     if not observed_freqs:
         print("No mutation pairs found for DCA-filtered positions")
@@ -308,7 +307,7 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
                 raw_data.append({
                     'position_1': pos1_int,
                     'position_2': pos2_int,
-                    'mutation_pair': pair_labels[i] if i < len(pair_labels) else f"Pos{pos1}-Pos{pos2}",
+                    'mutation_pair': pair_labels[i] if i < len(pair_labels) else "Pos{0}-Pos{1}".format(pos1, pos2),
                     'observed_frequency': obs,
                     'expected_frequency': exp,
                     'position_pair': pair
@@ -316,7 +315,7 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
     
     raw_df = pd.DataFrame(raw_data)
     raw_df.to_csv(raw_data_file, index=False)
-    print(f"Saved raw mutation pairs data to {raw_data_file} ({len(raw_data)} pairs from {len(filtered_positions)} filtered positions)")
+    print("Saved raw mutation pairs data to {0} ({1} pairs from {2} filtered positions)".format(raw_data_file, len(raw_data), len(filtered_positions)))
     
     # Create plot
     plt.figure(figsize=(12, 8))
@@ -342,7 +341,7 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
                 # New labeling criteria: (ratio > 5 or < 0.2) AND (obs > 0.1 or exp > 0.1)
                 ratio = obs / exp if exp > 0 else float('inf')
                 if (ratio > 5 or ratio < 0.2) and (obs > 0.1 or exp > 0.1):
-                        mutation_label = pair_labels[idx] if idx < len(pair_labels) else f"Pos{pair.replace('Pos', '').replace('-', '-Pos')}"
+                        mutation_label = pair_labels[idx] if idx < len(pair_labels) else "Pos{0}".format(pair.replace('Pos', '').replace('-', '-Pos'))
                         formatted_label = format_mutation_label(mutation_label, reference_seq)
                         
                         # Better label positioning to avoid overlap
@@ -365,7 +364,7 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
     
     plt.xlabel('Expected Frequency (Independence)')
     plt.ylabel('Observed Frequency')
-    plt.title(f'Observed vs Expected Mutation Pair Frequencies\n(DCA-filtered positions, >{min_frequency*100:.1f}% mutation frequency)')
+    plt.title("Observed vs Expected Mutation Pair Frequencies\n(DCA-filtered positions, >{0:.1f}% mutation frequency)".format(min_frequency*100))
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True, alpha=0.3)
     
@@ -373,19 +372,19 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
     plot_file = os.path.join(output_dir, "observed_vs_expected_frequencies.pdf")
     try:
         plt.savefig(plot_file, dpi=300, bbox_inches='tight')
-        print(f"Saved observed vs expected plot to {plot_file}")
+        print("Saved observed vs expected plot to {0}".format(plot_file))
     except Exception as e:
-        print(f"Warning: Could not save PDF plot: {e}")
+        print("Warning: Could not save PDF plot: {0}".format(e))
         # Try saving as PNG instead
         png_file = os.path.join(output_dir, "observed_vs_expected_frequencies.png")
         plt.savefig(png_file, dpi=300, bbox_inches='tight')
-        print(f"Saved observed vs expected plot as PNG to {png_file}")
+        print("Saved observed vs expected plot as PNG to {0}".format(png_file))
     finally:
         plt.close()
     print("Observed vs expected frequency calculation completed")
 
 
-def calculate_entropy(mutation_counts: Counter) -> float:
+def calculate_entropy(mutation_counts):
     """Calculate normalized entropy of genotype distribution."""
     total_counts = sum(mutation_counts.values())
     if total_counts == 0:
@@ -403,7 +402,7 @@ def calculate_entropy(mutation_counts: Counter) -> float:
     
     return normalized_entropy
 
-def plot_mutation_set_distribution(mutation_counts: Counter, output_dir: str, other_sample_dirs: List[str] = None, min_count: int = 100):
+def plot_mutation_set_distribution(mutation_counts, output_dir, other_sample_dirs=None, min_count=100):
     """Plot distribution of mutation set counts with >100 reads, colored by uniqueness."""
     print("Creating mutation set distribution plot...")
     
@@ -411,13 +410,13 @@ def plot_mutation_set_distribution(mutation_counts: Counter, output_dir: str, ot
     high_count_mutations = {mutation_set: count for mutation_set, count in mutation_counts.items() if count > min_count}
     
     if not high_count_mutations:
-        print(f"No mutation sets found with >{min_count} reads")
+        print("No mutation sets found with >{0} reads".format(min_count))
         return
     
     # Get mutation sets from other samples for comparison
     other_sample_mutations = set()
     if other_sample_dirs:
-        print(f"Checking for mutation sets in {len(other_sample_dirs)} other sample directories...")
+        print("Checking for mutation sets in {0} other sample directories...".format(len(other_sample_dirs)))
         for sample_dir in other_sample_dirs:
             mutation_table_file = os.path.join(sample_dir, "mutation_table.csv")
             if os.path.exists(mutation_table_file):
@@ -440,9 +439,9 @@ def plot_mutation_set_distribution(mutation_counts: Counter, output_dir: str, ot
                             if mutations:
                                 other_mutations.add(tuple(sorted(mutations)))
                     other_sample_mutations.update(other_mutations)
-                    print(f"Found {len(other_mutations)} high-count mutation sets in {sample_dir}")
+                    print("Found {0} high-count mutation sets in {1}".format(len(other_mutations), sample_dir))
                 except Exception as e:
-                    print(f"Warning: Could not read mutation table from {sample_dir}: {e}")
+                    print("Warning: Could not read mutation table from {0}: {1}".format(sample_dir, e))
     
     # Determine colors for each mutation set
     colors = []
@@ -467,7 +466,7 @@ def plot_mutation_set_distribution(mutation_counts: Counter, output_dir: str, ot
     # Create mutation set labels for x-axis
     mutation_labels = []
     for mutation_set in mutation_sets:
-        mutation_str = "; ".join([f"{ref_aa}{pos}{mut_aa}" for pos, ref_aa, mut_aa in mutation_set])
+        mutation_str = "; ".join(["{0}{1}{2}".format(ref_aa, pos, mut_aa) for pos, ref_aa, mut_aa in mutation_set])
         mutation_labels.append(mutation_str)
     
     # Create bars
@@ -476,15 +475,15 @@ def plot_mutation_set_distribution(mutation_counts: Counter, output_dir: str, ot
     # Customize plot
     plt.xlabel('Mutation Set', fontsize=12)
     plt.ylabel('Read Count', fontsize=12)
-    plt.title(f'Distribution of Mutation Sets with >{min_count} Reads\n(Green=Unique to this sample, Gray=Found in other samples)', fontsize=14)
+    plt.title("Distribution of Mutation Sets with >{0} Reads\n(Green=Unique to this sample, Gray=Found in other samples)".format(min_count), fontsize=14)
     plt.xticks(range(len(mutation_sets)), mutation_labels, rotation=45, ha='right', fontsize=8)
     plt.grid(True, alpha=0.3, axis='y')
     
     # Add legend
     from matplotlib.patches import Patch
     legend_elements = [
-        Patch(facecolor='green', alpha=0.7, label=f'Unique to this sample ({unique_count})'),
-        Patch(facecolor='gray', alpha=0.7, label=f'Found in other samples ({shared_count})')
+        Patch(facecolor='green', alpha=0.7, label="Unique to this sample ({0})".format(unique_count)),
+        Patch(facecolor='gray', alpha=0.7, label="Found in other samples ({0})".format(shared_count))
     ]
     plt.legend(handles=legend_elements, loc='upper right')
     
@@ -499,39 +498,39 @@ def plot_mutation_set_distribution(mutation_counts: Counter, output_dir: str, ot
     plot_file = os.path.join(output_dir, "mutation_set_distribution.pdf")
     try:
         plt.savefig(plot_file, dpi=300, bbox_inches='tight')
-        print(f"Saved mutation set distribution plot to {plot_file}")
+        print("Saved mutation set distribution plot to {0}".format(plot_file))
     except Exception as e:
-        print(f"Warning: Could not save PDF plot: {e}")
+        print("Warning: Could not save PDF plot: {0}".format(e))
         # Try saving as PNG instead
         png_file = os.path.join(output_dir, "mutation_set_distribution.png")
         plt.savefig(png_file, dpi=300, bbox_inches='tight')
-        print(f"Saved mutation set distribution plot as PNG to {png_file}")
+        print("Saved mutation set distribution plot as PNG to {0}".format(png_file))
     finally:
         plt.close()
     
-    print(f"Mutation set distribution plot complete: {unique_count} unique, {shared_count} shared with other samples")
+    print("Mutation set distribution plot complete: {0} unique, {1} shared with other samples".format(unique_count, shared_count))
 
-def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, gene_start: str, gene_length: int, output_dir: str, frequency_cutoff: float = 0.05, other_sample_dirs: List[str] = None):
+def analyze_mutations(input_fasta, reference_fasta, min_length, gene_start, gene_length, output_dir, frequency_cutoff=0.05, other_sample_dirs=None):
     """Main analysis function."""
-    print(f"Loading reference from {reference_fasta}")
+    print("Loading reference from {0}".format(reference_fasta))
     reference_record = next(SeqIO.parse(reference_fasta, "fasta"))
     reference_seq = str(reference_record.seq).upper()
-    print(f"Reference length: {len(reference_seq)}")
+    print("Reference length: {0}".format(len(reference_seq)))
     
     # Load the other reference for cross-reference checking
     other_reference_fasta = "sp24_dna.fa" if "sp23" in reference_fasta else "sp23_dna.fa"
-    print(f"Loading other reference from {other_reference_fasta} for cross-reference checking")
+    print("Loading other reference from {0} for cross-reference checking".format(other_reference_fasta))
     other_reference_record = next(SeqIO.parse(other_reference_fasta, "fasta"))
     other_reference_seq = str(other_reference_record.seq).upper()
-    print(f"Other reference length: {len(other_reference_seq)}")
+    print("Other reference length: {0}".format(len(other_reference_seq)))
     
-    print(f"Loading reads from {input_fasta}")
+    print("Loading reads from {0}".format(input_fasta))
     reads = list(SeqIO.parse(input_fasta, "fasta"))
-    print(f"Total reads: {len(reads)}")
+    print("Total reads: {0}".format(len(reads)))
     
     # Filter by length
     filtered_reads = [read for read in reads if len(read.seq) >= min_length]
-    print(f"Reads after length filter (>{min_length}): {len(filtered_reads)}")
+    print("Reads after length filter (>{0}): {1}".format(min_length, len(filtered_reads)))
     
     if not filtered_reads:
         print("No reads passed length filter. Exiting.")
@@ -552,7 +551,7 @@ def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, g
     for read in filtered_reads:
         processed += 1
         if processed % 100 == 0:
-            print(f"Processed {processed} reads...")
+            print("Processed {0} reads...".format(processed))
         
         query_seq = str(read.seq).upper()
         
@@ -605,11 +604,11 @@ def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, g
         else:
             no_mutations_count += 1
     
-    print(f"Reads with mutations: {len(all_mutations)}")
+    print("Reads with mutations: {0}".format(len(all_mutations)))
     
     # Calculate entropy
     normalized_entropy = calculate_entropy(mutation_counts)
-    print(f"Normalized entropy of genotype distribution: {normalized_entropy:.3f}")
+    print("Normalized entropy of genotype distribution: {0:.3f}".format(normalized_entropy))
     
     # Run frequency filtering for downstream analyses
     coupling_filtered_positions = run_frequency_filtering(all_mutations, min_frequency=frequency_cutoff)
@@ -628,13 +627,13 @@ def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, g
     mutation_table_data.append({"Mutation_Set": "No_mutations", "Count": no_mutations_count})
     
     for mutation_set, count in mutation_counts.most_common():
-        mutation_str = "; ".join([f"{ref_aa}{pos}{mut_aa}" for pos, ref_aa, mut_aa in mutation_set])
+        mutation_str = "; ".join(["{0}{1}{2}".format(ref_aa, pos, mut_aa) for pos, ref_aa, mut_aa in mutation_set])
         mutation_table_data.append({"Mutation_Set": mutation_str, "Count": count})
     
     mutation_df = pd.DataFrame(mutation_table_data)
     mutation_table_file = os.path.join(output_dir, "mutation_table.csv")
     mutation_df.to_csv(mutation_table_file, index=False)
-    print(f"Saved mutation table to {mutation_table_file}")
+    print("Saved mutation table to {0}".format(mutation_table_file))
     
     # Create mutation set distribution plot
     plot_mutation_set_distribution(mutation_counts, output_dir, other_sample_dirs, min_count=100)
@@ -642,46 +641,46 @@ def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, g
     # Save summary statistics
     summary_file = os.path.join(output_dir, "summary_statistics.txt")
     with open(summary_file, 'w') as f:
-        f.write(f"reads_total\t{len(reads)}\n")
-        f.write(f"reads_length_pass\t{len(filtered_reads)}\n")
-        f.write(f"reads_length_fail\t{len(reads) - len(filtered_reads)}\n")
-        f.write(f"reads_gene_start_found\t{len(filtered_reads) - skipped_no_gene_start}\n")
-        f.write(f"reads_discard_high_mismatch\t{skipped_high_mismatch}\n")
-        f.write(f"reads_discard_short_subread\t{skipped_short_subread}\n")
-        f.write(f"reads_discard_low_identity\t{skipped_low_identity}\n")
-        f.write(f"reads_discard_cross_reference\t{skipped_cross_reference}\n")
-        f.write(f"reads_no_mutations\t{no_mutations_count}\n")
-        f.write(f"reads_with_mutations\t{len(all_mutations)}\n")
-        f.write(f"unique_mutation_sets\t{len(mutation_counts)}\n")
-        f.write(f"coupling_filtered_positions\t{len(coupling_filtered_positions)}\n")
-        f.write(f"position_frequency_threshold\t{frequency_cutoff*100:.1f}\n")
-        f.write(f"normalized_entropy\t{normalized_entropy:.3f}\n")
-        f.write(f"coupling_analysis_skipped\tTrue\n")
+        f.write("reads_total\t{0}\n".format(len(reads)))
+        f.write("reads_length_pass\t{0}\n".format(len(filtered_reads)))
+        f.write("reads_length_fail\t{0}\n".format(len(reads) - len(filtered_reads)))
+        f.write("reads_gene_start_found\t{0}\n".format(len(filtered_reads) - skipped_no_gene_start))
+        f.write("reads_discard_high_mismatch\t{0}\n".format(skipped_high_mismatch))
+        f.write("reads_discard_short_subread\t{0}\n".format(skipped_short_subread))
+        f.write("reads_discard_low_identity\t{0}\n".format(skipped_low_identity))
+        f.write("reads_discard_cross_reference\t{0}\n".format(skipped_cross_reference))
+        f.write("reads_no_mutations\t{0}\n".format(no_mutations_count))
+        f.write("reads_with_mutations\t{0}\n".format(len(all_mutations)))
+        f.write("unique_mutation_sets\t{0}\n".format(len(mutation_counts)))
+        f.write("coupling_filtered_positions\t{0}\n".format(len(coupling_filtered_positions)))
+        f.write("position_frequency_threshold\t{0:.1f}\n".format(frequency_cutoff*100))
+        f.write("normalized_entropy\t{0:.3f}\n".format(normalized_entropy))
+        f.write("coupling_analysis_skipped\tTrue\n")
     
-    print(f"Saved summary statistics to {summary_file}")
+    print("Saved summary statistics to {0}".format(summary_file))
     
     # Print summary
-    print(f"\nSummary:")
-    print(f"Total reads: {len(reads)}")
-    print(f"Reads passing length filter: {len(filtered_reads)}")
-    print(f"Reads failing length filter: {len(reads) - len(filtered_reads)}")
-    print(f"Reads with gene_start found: {len(filtered_reads) - skipped_no_gene_start}")
-    print(f"Reads discarded (high mismatch >2): {skipped_high_mismatch}")
-    print(f"Reads discarded (short subread): {skipped_short_subread}")
-    print(f"Reads discarded (low identity <90%): {skipped_low_identity}")
-    print(f"Reads discarded (better match to other reference): {skipped_cross_reference}")
-    print(f"Reads with no mutations: {no_mutations_count}")
-    print(f"Reads with mutations: {len(all_mutations)}")
-    print(f"Unique mutation sets: {len(mutation_counts)}")
-    print(f"Coupling-filtered positions: {len(coupling_filtered_positions)} with >{frequency_cutoff*100:.1f}% mutation frequency")
-    print(f"Normalized entropy: {normalized_entropy:.3f}")
-    print(f"Coupling analysis: Skipped (EVcouplings requires pre-computed model files)")
+    print("\nSummary:")
+    print("Total reads: {0}".format(len(reads)))
+    print("Reads passing length filter: {0}".format(len(filtered_reads)))
+    print("Reads failing length filter: {0}".format(len(reads) - len(filtered_reads)))
+    print("Reads with gene_start found: {0}".format(len(filtered_reads) - skipped_no_gene_start))
+    print("Reads discarded (high mismatch >2): {0}".format(skipped_high_mismatch))
+    print("Reads discarded (short subread): {0}".format(skipped_short_subread))
+    print("Reads discarded (low identity <90%): {0}".format(skipped_low_identity))
+    print("Reads discarded (better match to other reference): {0}".format(skipped_cross_reference))
+    print("Reads with no mutations: {0}".format(no_mutations_count))
+    print("Reads with mutations: {0}".format(len(all_mutations)))
+    print("Unique mutation sets: {0}".format(len(mutation_counts)))
+    print("Coupling-filtered positions: {0} with >{1:.1f}% mutation frequency".format(len(coupling_filtered_positions), frequency_cutoff*100))
+    print("Normalized entropy: {0:.3f}".format(normalized_entropy))
+    print("Coupling analysis: Skipped (EVcouplings requires pre-computed model files)")
     if mutation_counts:
         most_common = mutation_counts.most_common(1)[0]
-        mutation_str = "; ".join([f"{ref_aa}{pos}{mut_aa}" for pos, ref_aa, mut_aa in most_common[0]])
-        print(f"Most common mutation set: {mutation_str} (count: {most_common[1]})")
+        mutation_str = "; ".join(["{0}{1}{2}".format(ref_aa, pos, mut_aa) for pos, ref_aa, mut_aa in most_common[0]])
+        print("Most common mutation set: {0} (count: {1})".format(mutation_str, most_common[1]))
     
-    print(f"\nAnalysis complete. Results saved to {output_dir}")
+    print("\nAnalysis complete. Results saved to {0}".format(output_dir))
 
 def main():
     parser = argparse.ArgumentParser(description='Analyze amino acid mutations in FASTA reads')
@@ -698,13 +697,13 @@ def main():
     
     print("Dependencies imported: pandas, numpy, biopython")
     print("Analysis initiated")
-    print(f"Input FASTA: {args.input_fasta}")
-    print(f"Reference FASTA: {args.reference_fasta}")
-    print(f"Min length: {args.min_length}")
-    print(f"Gene start: {args.gene_start}")
-    print(f"Gene length: {args.gene_length}")
-    print(f"Frequency cutoff: {args.frequency_cutoff*100:.1f}%")
-    print(f"Output directory: {args.output_dir}")
+    print("Input FASTA: {0}".format(args.input_fasta))
+    print("Reference FASTA: {0}".format(args.reference_fasta))
+    print("Min length: {0}".format(args.min_length))
+    print("Gene start: {0}".format(args.gene_start))
+    print("Gene length: {0}".format(args.gene_length))
+    print("Frequency cutoff: {0:.1f}%".format(args.frequency_cutoff*100))
+    print("Output directory: {0}".format(args.output_dir))
     print()
     
     analyze_mutations(
