@@ -339,9 +339,9 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
             for i, idx in enumerate(pair_indices):
                 obs = observed_freqs[idx]
                 exp = expected_freqs[idx]
-                if exp > 0.01:  # Only label points with expected frequency > 0.01
-                    ratio = obs / exp
-                    if ratio > 5 or ratio < 0.2:
+                # New labeling criteria: (ratio > 5 or < 0.2) AND (obs > 0.1 or exp > 0.1)
+                ratio = obs / exp if exp > 0 else float('inf')
+                if (ratio > 5 or ratio < 0.2) and (obs > 0.1 or exp > 0.1):
                         mutation_label = pair_labels[idx] if idx < len(pair_labels) else f"Pos{pair.replace('Pos', '').replace('-', '-Pos')}"
                         formatted_label = format_mutation_label(mutation_label, reference_seq)
                         
@@ -355,7 +355,8 @@ def plot_observed_vs_expected(mutation_counts: Counter, output_dir: str, filtere
                                    textcoords='offset points', 
                                    fontsize=6, alpha=0.8,
                                    bbox=dict(boxstyle="round,pad=0.2", facecolor="white", alpha=0.8),
-                                   rotation=0)  # All labels horizontal
+                                   rotation=0,  # All labels horizontal
+                                   arrowprops=dict(arrowstyle='-', color='gray', alpha=0.5, lw=0.5))  # Add line to label
                         label_count += 1
     
     # Add y=x line
@@ -507,9 +508,9 @@ def plot_observed_vs_expected_triplets(mutation_counts: Counter, output_dir: str
             for i, idx in enumerate(triplet_indices):
                 obs = observed_freqs[idx]
                 exp = expected_freqs[idx]
-                if exp > 0.01:  # Only label points with expected frequency > 0.01
-                    ratio = obs / exp
-                    if ratio > 5 or ratio < 0.2:
+                # New labeling criteria: (ratio > 5 or < 0.2) AND (obs > 0.1 or exp > 0.1)
+                ratio = obs / exp if exp > 0 else float('inf')
+                if (ratio > 5 or ratio < 0.2) and (obs > 0.1 or exp > 0.1):
                         mutation_label = triplet_labels[idx] if idx < len(triplet_labels) else f"Pos{triplet.replace('Pos', '').replace('-', '-Pos')}"
                         formatted_label = format_mutation_label(mutation_label, reference_seq)
                         
@@ -523,7 +524,8 @@ def plot_observed_vs_expected_triplets(mutation_counts: Counter, output_dir: str
                                    textcoords='offset points', 
                                    fontsize=5, alpha=0.8,
                                    bbox=dict(boxstyle="round,pad=0.2", facecolor="white", alpha=0.8),
-                                   rotation=0)  # All labels horizontal
+                                   rotation=0,  # All labels horizontal
+                                   arrowprops=dict(arrowstyle='-', color='gray', alpha=0.5, lw=0.5))  # Add line to label
                         label_count += 1
     
     # Add y=x line
