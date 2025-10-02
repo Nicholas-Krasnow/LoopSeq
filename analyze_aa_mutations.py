@@ -571,7 +571,115 @@ def calculate_entropy(mutation_counts: Counter) -> float:
     
     return normalized_entropy
 
-def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, gene_start: str, gene_length: int, output_dir: str, frequency_cutoff: float = 0.05):
+def plot_mutation_set_distribution(mutation_counts: Counter, output_dir: str, other_sample_dirs: List[str] = None, min_count: int = 100):
+    """Plot distribution of mutation set counts with >100 reads, colored by uniqueness."""
+    print("Creating mutation set distribution plot...")
+    
+    # Filter mutation sets with >100 reads
+    high_count_mutations = {mutation_set: count for mutation_set, count in mutation_counts.items() if count > min_count}
+    
+    if not high_count_mutations:
+        print(f"No mutation sets found with >{min_count} reads")
+        return
+    
+    # Get mutation sets from other samples for comparison
+    other_sample_mutations = set()
+    if other_sample_dirs:
+        print(f"Checking for mutation sets in {len(other_sample_dirs)} other sample directories...")
+        for sample_dir in other_sample_dirs:
+            mutation_table_file = os.path.join(sample_dir, "mutation_table.csv")
+            if os.path.exists(mutation_table_file):
+                try:
+                    other_df = pd.read_csv(mutation_table_file)
+                    # Extract mutation sets from other samples (skip "No_mutations" row)
+                    other_mutations = set()
+                    for _, row in other_df.iterrows():
+                        if row['Mutation_Set'] != 'No_mutations' and row['Count'] > min_count:
+                            # Parse mutation set string back to tuple format
+                            mutation_str = row['Mutation_Set']
+                            mutations = []
+                            for mut in mutation_str.split('; '):
+                                if len(mut) >= 3:  # At least ref_aa + pos + mut_aa
+                                    # Extract position and amino acids
+                                    pos = int(''.join(c for c in mut if c.isdigit()))
+                                    ref_aa = mut[0]
+                                    mut_aa = mut[-1]
+                                    mutations.append((pos, ref_aa, mut_aa))
+                            if mutations:
+                                other_mutations.add(tuple(sorted(mutations)))
+                    other_sample_mutations.update(other_mutations)
+                    print(f"Found {len(other_mutations)} high-count mutation sets in {sample_dir}")
+                except Exception as e:
+                    print(f"Warning: Could not read mutation table from {sample_dir}: {e}")
+    
+    # Determine colors for each mutation set
+    colors = []
+    unique_count = 0
+    shared_count = 0
+    
+    for mutation_set in high_count_mutations.keys():
+        if mutation_set in other_sample_mutations:
+            colors.append('gray')
+            shared_count += 1
+        else:
+            colors.append('green')
+            unique_count += 1
+    
+    # Create plot
+    plt.figure(figsize=(15, 8))
+    
+    # Sort mutation sets by count for better visualization
+    sorted_mutations = sorted(high_count_mutations.items(), key=lambda x: x[1], reverse=True)
+    mutation_sets, counts = zip(*sorted_mutations)
+    
+    # Create mutation set labels for x-axis
+    mutation_labels = []
+    for mutation_set in mutation_sets:
+        mutation_str = "; ".join([f"{ref_aa}{pos}{mut_aa}" for pos, ref_aa, mut_aa in mutation_set])
+        mutation_labels.append(mutation_str)
+    
+    # Create bars
+    bars = plt.bar(range(len(mutation_sets)), counts, color=colors, alpha=0.7, edgecolor='black', linewidth=0.5)
+    
+    # Customize plot
+    plt.xlabel('Mutation Set', fontsize=12)
+    plt.ylabel('Read Count', fontsize=12)
+    plt.title(f'Distribution of Mutation Sets with >{min_count} Reads\n(Green=Unique to this sample, Gray=Found in other samples)', fontsize=14)
+    plt.xticks(range(len(mutation_sets)), mutation_labels, rotation=45, ha='right', fontsize=8)
+    plt.grid(True, alpha=0.3, axis='y')
+    
+    # Add legend
+    from matplotlib.patches import Patch
+    legend_elements = [
+        Patch(facecolor='green', alpha=0.7, label=f'Unique to this sample ({unique_count})'),
+        Patch(facecolor='gray', alpha=0.7, label=f'Found in other samples ({shared_count})')
+    ]
+    plt.legend(handles=legend_elements, loc='upper right')
+    
+    # Add count annotations on bars
+    for i, (bar, count) in enumerate(zip(bars, counts)):
+        plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(counts)*0.01, 
+                str(count), ha='center', va='bottom', fontsize=8)
+    
+    plt.tight_layout()
+    
+    # Save plot
+    plot_file = os.path.join(output_dir, "mutation_set_distribution.pdf")
+    try:
+        plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+        print(f"Saved mutation set distribution plot to {plot_file}")
+    except Exception as e:
+        print(f"Warning: Could not save PDF plot: {e}")
+        # Try saving as PNG instead
+        png_file = os.path.join(output_dir, "mutation_set_distribution.png")
+        plt.savefig(png_file, dpi=300, bbox_inches='tight')
+        print(f"Saved mutation set distribution plot as PNG to {png_file}")
+    finally:
+        plt.close()
+    
+    print(f"Mutation set distribution plot complete: {unique_count} unique, {shared_count} shared with other samples")
+
+def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, gene_start: str, gene_length: int, output_dir: str, frequency_cutoff: float = 0.05, other_sample_dirs: List[str] = None):
     """Main analysis function."""
     print(f"Loading reference from {reference_fasta}")
     reference_record = next(SeqIO.parse(reference_fasta, "fasta"))
@@ -699,6 +807,9 @@ def analyze_mutations(input_fasta: str, reference_fasta: str, min_length: int, g
     mutation_df.to_csv(mutation_table_file, index=False)
     print(f"Saved mutation table to {mutation_table_file}")
     
+    # Create mutation set distribution plot
+    plot_mutation_set_distribution(mutation_counts, output_dir, other_sample_dirs, min_count=100)
+    
     # Save summary statistics
     summary_file = os.path.join(output_dir, "summary_statistics.txt")
     with open(summary_file, 'w') as f:
@@ -752,6 +863,7 @@ def main():
     parser.add_argument('--gene_length', type=int, required=True, help='Length of gene to analyze')
     parser.add_argument('--frequency_cutoff', type=float, default=0.05, help='Frequency cutoff for position filtering (default: 0.05)')
     parser.add_argument('--output_dir', required=True, help='Output directory')
+    parser.add_argument('--other_sample_dirs', nargs='*', default=None, help='List of other sample directories to compare mutation sets against')
     
     args = parser.parse_args()
     
@@ -773,7 +885,8 @@ def main():
         args.gene_start,
         args.gene_length,
         args.output_dir,
-        args.frequency_cutoff
+        args.frequency_cutoff,
+        args.other_sample_dirs
     )
 
 if __name__ == "__main__":
