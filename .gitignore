@@ -1,0 +1,28 @@
+# Large data files
+*.tar.gz
+L1e8e291d_LoopSeqSample_admin/
+L1e8e291d_sample_*_downsampled_*.fa
+
+# Analysis results
+aa_analysis_results*/
+analysis_output.log
+*.out
+*.err
+qsub_out/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
