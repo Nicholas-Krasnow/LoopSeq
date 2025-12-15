@@ -1,0 +1,29 @@
+mutation_set,count,category,reference_fasta
+S162I; S163F,26322,Starting point-specific,sp23_dna.fa
+S162I; S163F; K225E,12431,Starting point-specific,sp23_dna.fa
+S162N; K225I,5325,Starting point-specific,sp23_dna.fa
+T160A; K225I,2659,Shared,sp23_dna.fa
+S162I; K225N,2325,Starting point-specific,sp23_dna.fa
+S162I; K225E,1300,Starting point-specific,sp23_dna.fa
+K225I,601,Shared,sp23_dna.fa
+S162I; S163F; S318I,466,Starting point-specific,sp23_dna.fa
+S162I; S163F; R402C,437,Starting point-specific,sp23_dna.fa
+S162I; S163F; K225N,420,Starting point-specific,sp23_dna.fa
+S162I; K225I,270,Shared,sp23_dna.fa
+S162I; S163F; W268R,260,Starting point-specific,sp23_dna.fa
+S162I; S163F; K225I,255,Starting point-specific,sp23_dna.fa
+S162I; S163F; M211I,252,Starting point-specific,sp23_dna.fa
+S162I; S163F; K225E; E269G,228,Starting point-specific,sp23_dna.fa
+S162I; S163F; K225M,226,Starting point-specific,sp23_dna.fa
+S162I; K225N; I262L,212,Starting point-specific,sp23_dna.fa
+S162I; K225T,204,Shared,sp23_dna.fa
+S162I; S163F; I181V,196,Starting point-specific,sp23_dna.fa
+S162I,179,Starting point-specific,sp23_dna.fa
+S162I; S163F; T242A,178,Starting point-specific,sp23_dna.fa
+S162I; S163F; M211I; C231S,148,Starting point-specific,sp23_dna.fa
+S162I; S163F; K225E; S287G,137,Starting point-specific,sp23_dna.fa
+Q53R; K225I,125,Starting point-specific,sp23_dna.fa
+S162I; S163F; Y384C,123,Starting point-specific,sp23_dna.fa
+F136L; S162N; K225I,112,Starting point-specific,sp23_dna.fa
+S162I; S163F; I215V,110,Starting point-specific,sp23_dna.fa
+S162I; S163F; C231R,109,Starting point-specific,sp23_dna.fa

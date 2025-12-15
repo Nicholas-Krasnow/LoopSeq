@@ -1,0 +1,31 @@
+mutation_set,count,category,reference_fasta
+S162I; N164S; G220V; K225T,45567,Shared,sp24_dna.fa
+L98P; S162I; N164S; G220V; K225T,6162,Starting point-specific,sp24_dna.fa
+E154G; S162I; N164S; G220V; K225T,1101,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; C231R,1063,Starting point-specific,sp24_dna.fa
+N138D; S162I; N164S; G220V; K225T,959,Starting point-specific,sp24_dna.fa
+G101S; S162I; N164S; G220V; K225T,756,Starting point-specific,sp24_dna.fa
+L98P; S162I; N164S; G220V; K225T; N390S,627,Starting point-specific,sp24_dna.fa
+N10D; S162I; N164S; G220V; K225T,471,Starting point-specific,sp24_dna.fa
+S60N; S162I; N164S; G220V; K225T,459,Starting point-specific,sp24_dna.fa
+S162I; N164S; M172I; G220V; K225T,413,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; I232T,396,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; C231S,344,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; N362D,285,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; N365D,279,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; V265A,184,Starting point-specific,sp24_dna.fa
+I134V; S162I; N164S; G220V; K225T,172,Starting point-specific,sp24_dna.fa
+I41V; S162I; N164S; G220V; K225T,168,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; N248S,166,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; D278N,161,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; D325N,147,Starting point-specific,sp24_dna.fa
+S162I; N164S; V184I; G220V; K225T,140,Starting point-specific,sp24_dna.fa
+S60G; S162I; N164S; G220V; K225T,133,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; N390S,128,Starting point-specific,sp24_dna.fa
+S162I; N164S; G220V; K225T; A266E,126,Starting point-specific,sp24_dna.fa
+S162V; N164S; G220V; K225T,123,Starting point-specific,sp24_dna.fa
+S162C; G220V; K225T; C231R,121,Starting point-specific,sp24_dna.fa
+L98P; I134V; S162I; N164S; G220V; K225T,121,Starting point-specific,sp24_dna.fa
+L98P; S162I; N164S; G220V; K225T; D325N,120,Starting point-specific,sp24_dna.fa
+E28K; S162I; N164S; G220V; K225T,113,Starting point-specific,sp24_dna.fa
+S162I; N164S; N195S; G220V; K225T,109,Starting point-specific,sp24_dna.fa

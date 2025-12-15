@@ -5,6 +5,7 @@ L1e8e291d_sample_*_downsampled_*.fa
 
 # Analysis results
 aa_analysis_results*/
+!aa_analysis_results*_cluster_1based/
 analysis_output.log
 *.out
 *.err

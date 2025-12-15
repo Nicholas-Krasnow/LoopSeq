@@ -1,0 +1,15 @@
+reads_total	94307
+reads_length_pass	70532
+reads_length_fail	23775
+reads_gene_start_found	70394
+reads_discard_high_mismatch	0
+reads_discard_short_subread	0
+reads_discard_low_identity	0
+reads_discard_cross_reference	2842
+reads_no_mutations	981
+reads_with_mutations	65885
+unique_mutation_sets	7484
+coupling_filtered_positions	6
+position_frequency_threshold	1.0
+normalized_entropy	0.444
+coupling_analysis_skipped	True

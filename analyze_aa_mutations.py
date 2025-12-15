@@ -545,6 +545,7 @@ def analyze_mutations(input_fasta, reference_fasta, min_length, gene_start, gene
     skipped_short_subread = 0
     skipped_low_identity = 0
     skipped_cross_reference = 0
+    skipped_chimeras = 0
     no_mutations_count = 0
     
     print("Analyzing mutations...")
@@ -584,10 +585,14 @@ def analyze_mutations(input_fasta, reference_fasta, min_length, gene_start, gene
         other_ref_aligned, other_subread_aligned, other_start, other_end, other_identity = compare_subread_to_reference(subread, other_reference_seq, min_identity=0.0)
         
         # If subread matches >90% to the other reference AND better than target reference, discard it
-        # Temporarily disabled for debugging
-        # if other_identity > 0.9 and other_identity > identity:
-        #     skipped_cross_reference += 1
-        #     continue
+        if other_identity > 0.9 and other_identity > identity:
+            skipped_cross_reference += 1
+            continue
+        
+        # Chimera filter: discard sequences with >93% match to both references
+        if identity > 0.93 and other_identity > 0.93:
+            skipped_chimeras += 1
+            continue
         
         # Translate DNA sequences to amino acid sequences
         ref_aa = translate_dna(ref_aligned)
@@ -649,6 +654,7 @@ def analyze_mutations(input_fasta, reference_fasta, min_length, gene_start, gene
         f.write("reads_discard_short_subread\t{0}\n".format(skipped_short_subread))
         f.write("reads_discard_low_identity\t{0}\n".format(skipped_low_identity))
         f.write("reads_discard_cross_reference\t{0}\n".format(skipped_cross_reference))
+        f.write("reads_discard_chimeras\t{0}\n".format(skipped_chimeras))
         f.write("reads_no_mutations\t{0}\n".format(no_mutations_count))
         f.write("reads_with_mutations\t{0}\n".format(len(all_mutations)))
         f.write("unique_mutation_sets\t{0}\n".format(len(mutation_counts)))
@@ -669,6 +675,7 @@ def analyze_mutations(input_fasta, reference_fasta, min_length, gene_start, gene
     print("Reads discarded (short subread): {0}".format(skipped_short_subread))
     print("Reads discarded (low identity <90%): {0}".format(skipped_low_identity))
     print("Reads discarded (better match to other reference): {0}".format(skipped_cross_reference))
+    print("Reads discarded (chimeras >93% match to both references): {0}".format(skipped_chimeras))
     print("Reads with no mutations: {0}".format(no_mutations_count))
     print("Reads with mutations: {0}".format(len(all_mutations)))
     print("Unique mutation sets: {0}".format(len(mutation_counts)))
