@@ -9,4 +9,4 @@ E3: T/E evolution on 413 substrate, replicate 2
 
 ### Usage
 
-run submit_batch_analysis.sh to submit analysis job to computing cluster with sample arguments specified in sample_config.csv 
+run submit_batch_analysis.sh to submit analysis job to computing cluster with sample data paths and arguments specified in sample_config.csv 
