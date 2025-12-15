@@ -1,0 +1,6 @@
+folder,reference_fasta,total_reads,shared_reads,specific_reads,fraction_shared,fraction_specific
+aa_analysis_results_A1_cluster_1based,sp23_dna.fa,55610,3734,51876,0.06714619672720734,0.9328538032727927
+aa_analysis_results_B3_cluster_1based,sp23_dna.fa,47707,4524,43183,0.09482885111199614,0.9051711488880039
+aa_analysis_results_D3_cluster_1based,sp24_dna.fa,61666,45586,16080,0.7392404242208024,0.2607595757791976
+aa_analysis_results_E3_cluster_1based,sp24_dna.fa,23595,6999,16596,0.2966306420851875,0.7033693579148125
+aa_analysis_results_F3_cluster_1based,sp24_dna.fa,61114,45567,15547,0.7456065713257192,0.25439342867428083

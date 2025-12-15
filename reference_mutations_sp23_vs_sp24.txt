@@ -1,0 +1,56 @@
+Amino Acid Mutations: SP23 vs SP24 (Reference: SP23)
+============================================================
+Position	SP23_AA	SP24_AA	Mutation
+------------------------------------------------------------
+6	T	S	T6S
+32	A	S	A32S
+56	L	H	L56H
+75	T	Q	T75Q
+76	T	S	T76S
+88	Q	T	Q88T
+121	P	D	P121D
+198	T	S	T198S
+199	D	I	D199I
+265	D	V	D265V
+266	E	A	E266A
+268	W	Y	W268Y
+269	E	N	E269N
+270	Q	D	Q270D
+272	R	Y	R272Y
+273	S	T	S273T
+277	K	N	K277N
+278	K	D	K278D
+280	E	R	E280R
+281	E	K	E281K
+284	K	S	K284S
+314	N	S	N314S
+316	N	I	N316I
+344	N	Q	N344Q
+365	D	N	D365N
+372	T	S	T372S
+373	Q	E	Q373E
+375	F	Y	F375Y
+378	G	N	G378N
+379	S	N	S379N
+381	A	K	A381K
+382	T	V	T382V
+384	Y	F	Y384F
+385	K	R	K385R
+389	V	A	V389A
+390	E	N	E390N
+391	E	L	E391L
+394	Q	R	Q394R
+396	V	I	V396I
+397	E	K	E397K
+398	E	P	E398P
+400	K	T	K400T
+407	N	K	N407K
+408	K	I	K408I
+410	E	R	E410R
+411	E	F	E411F
+
+============================================================
+Total mutations: 46
+SP23 protein length: 411
+SP24 protein length: 411
+Reading frame: +1
