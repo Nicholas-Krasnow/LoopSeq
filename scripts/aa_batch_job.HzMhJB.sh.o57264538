@@ -1,0 +1,18 @@
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 10: use: command not found
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 11: reuse: command not found
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 14: /broad/software/conda/miniconda3/etc/profile.d/conda.sh: No such file or directory
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 16: conda: command not found
+Creating loopseq conda environment...
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 18: conda: command not found
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 19: conda: command not found
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 24: conda: command not found
+Loopseq python: 
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 25: conda: command not found
+/var/spool/uger-8.5.5/uger-d001/job_scripts/57264538: line 28: conda: command not found
+Starting AA analysis for sample: 1-48_H1_n8
+Input FASTA: /broad/liulabdata/Nick_Krasnow/loopseq/all_files/samples_1-24/Ldfdffe94_output/Ldfdffe94_sample_BROAD_8/Ldfdffe94_sample_BROAD_8_contig_list_trimmed.fa
+Reference FASTA: /broad/liulabdata/Nick_Krasnow/loopseq/all_files/reference_fastas/sp23_dna.fa
+Gene length: 1233
+Output directory: /broad/liulabdata/Nick_Krasnow/loopseq/all_files/aa_analysis_results_1-48_H1_n8_cluster_1based
+Running analysis for 1-48_H1_n8...
+Analysis failed for 1-48_H1_n8 (check /broad/liulabdata/Nick_Krasnow/loopseq/all_files/qsub_out/aa_analysis_1-48_H1_n8_20260407_174143.err)

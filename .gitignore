@@ -1,0 +1,20 @@
+# Generated analysis outputs
+aa_analysis_results_*
+qsub_out/
+
+# Large bundled archives
+*.tar
+*.tgz
+
+# Derived summary files
+all_summary.xlsx
+
+# Large data directories
+initial_set/
+samples_1-24/
+samples_25-48/
+
+# Large data directories
+initial_set/
+samples_1-24/
+samples_25-48/
