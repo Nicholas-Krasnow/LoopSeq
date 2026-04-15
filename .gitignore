@@ -1,23 +1,21 @@
 # Generated analysis outputs
-aa_analysis_results_*
+aa_analysis_results_*/
 qsub_out/
+
+# Derived summaries
+all_summary.xlsx
+
+# Office lock / temp files
+~$*
 
 # Large bundled archives
 *.tar
 *.tgz
 
-# Derived summary files
-all_summary.xlsx
-
-# Large data directories
+# Large local data (raw / extracted inputs)
 initial_set/
 samples_1-24/
 samples_25-48/
 
-# Large data directories
-initial_set/
-samples_1-24/
-samples_25-48/
-
-# Batch job output logs
+# Scheduler / batch stdout logs (not source)
 scripts/aa_batch_job.*.sh.o*
