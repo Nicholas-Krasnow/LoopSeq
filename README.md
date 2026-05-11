@@ -170,9 +170,12 @@ Outputs in `plots_mutation_distance_violin/`.
 This repo includes a small, downsampled demo FASTA and the corresponding expected analysis outputs so you can quickly verify your setup without processing the full (large) input FASTA files.
 
 Downsampling logic (for reproducibility):
-- We start from the `replicate = 1`, `Starting point = WT/E` demo input FASTA.
-- We identify mutation sets (“genotypes”) with `read_count > 100` from the full analysis for that sample.
-- We then keep only reads that map to those high-read mutation sets, selecting a deterministic 1/10 of them (based on an md5 of the read ID).
+- We start from the full `replicate = 1`, `Starting point = WT/E` input FASTA for cluster `1-48_C4_n27` (`L1ba3f0d1_sample_BROAD_27_contig_list_trimmed.fa`).
+- From the full-sample workbook `aa_analysis_results_1-48_C4_n27_cluster_1based/sample_results.xlsx`, sheet `plotted_mutation_sets`, we take genotypes with `read_count > 100`, sort by `read_count` descending, and keep the top **10** labels (fewer if not enough genotypes pass the filter).
+- We keep **every** read that maps to the same mutation-set label as one of those chosen genotypes (same alignment and mutation-calling logic as `scripts/analyze_aa_mutations.py`).
+- For this sample the plotted sheet lists only **five** genotypes, all with `read_count > 100`, so all five are included and the demo FASTA contains every mapped read for those five (no further subsampling).
+
+The chosen genotype labels are listed in `demo/rep1_startWT_E_demo/demo_selected_genotypes.txt`.
 
 #### Demo assets included
 
@@ -180,7 +183,8 @@ The demo lives under:
 
 ```text
 demo/rep1_startWT_E_demo/
-  input_demo_1of10.fa
+  input_demo_plotted_genotypes_all_reads.fa
+  demo_selected_genotypes.txt
   output/
     sample_results.xlsx
     mutation_set_distribution.pdf
@@ -223,7 +227,7 @@ PY
 )"
 
 python3 scripts/analyze_aa_mutations.py \
-  --input_fasta demo/rep1_startWT_E_demo/input_demo_1of10.fa \
+  --input_fasta demo/rep1_startWT_E_demo/input_demo_plotted_genotypes_all_reads.fa \
   --reference_fasta reference_fastas/sp24_dna.fa \
   --gene_start "$GENE_START" \
   --gene_length 1233 \
@@ -244,13 +248,13 @@ sha256sum demo/rep1_startWT_E_demo/output_rerun/*.pdf demo/rep1_startWT_E_demo/o
 Expected hashes for the shipped outputs:
 
 ```text
-b40d8dad59544f54f4d14bfbc26a1f855d3895479c7a459a5841797e6d1b8a71  demo/rep1_startWT_E_demo/output/sample_results.xlsx
-3db1b20ddfde1d33b26af9e62a9ea8ba6c8232c8433ba5d9e7d843f1e138d200  demo/rep1_startWT_E_demo/output/mutation_set_distribution.pdf
-97a70150c6843648c2200f2d8ef8a43856e72d07af2e98f436bdf1c9d45d0f97  demo/rep1_startWT_E_demo/output/dna_mutation_distance_distribution.pdf
-4d50ecd8787017a09f3d1fa3eb63fba206aded4d1715f5cf4ba6168797461572  demo/rep1_startWT_E_demo/output/observed_vs_expected_frequencies.pdf
-8209c4ef2db3db56e20e403e55b752e9784fdd239ee4f5496a6d6da074963a93  demo/rep1_startWT_E_demo/output/mutation_table.csv
-6f57976c7520a4e9aea8611b912f8d77c1ad5902f1c3351970bf5564c67dd79e  demo/rep1_startWT_E_demo/output/mutation_pairs_raw_data.csv
-f40d8dad59544f54f4d14bfbc26a1f855d3895479c7a459a5841797e6d1b8a71  demo/rep1_startWT_E_demo/output/summary_statistics.txt
+3c868b1b3330e779bb7eef26deb15ec30209256a49fb0d1c5ab24e2fc313d8ef  demo/rep1_startWT_E_demo/output/sample_results.xlsx
+13100b253c4fc9578f85ddd4023e00109a30bfa577b51f3beef54ba8f2103fca  demo/rep1_startWT_E_demo/output/mutation_set_distribution.pdf
+96da2c7608b6182b2832c5221ae219aa4e4555d169b5c3a74985bcbd2977a580  demo/rep1_startWT_E_demo/output/dna_mutation_distance_distribution.pdf
+b19797f0d2e01264ae7c2cc196970af988cd0299ab3d9dea9da44dfbbcf9b298  demo/rep1_startWT_E_demo/output/observed_vs_expected_frequencies.pdf
+fec515483786529b4721f20216b322234d80a27f7f9fc771f791b84dc3e2fc1e  demo/rep1_startWT_E_demo/output/mutation_table.csv
+8e5ff1ccbd05caab95b04279686a7c2e39f476ef018dfdc6ca3807f478d585c5  demo/rep1_startWT_E_demo/output/mutation_pairs_raw_data.csv
+6dd08eb3bb5bc716316df260431660e9858dc74144d39fe3e5aa27c9f98827df  demo/rep1_startWT_E_demo/output/summary_statistics.txt
 37379bd8331fb75cfa290b20837e300f79430837f60cde2be875cc04c0b4eb1a  demo/rep1_startWT_E_demo/output/reference_used.txt
 ```
 

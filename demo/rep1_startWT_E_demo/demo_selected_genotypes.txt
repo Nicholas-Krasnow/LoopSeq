@@ -1,0 +1,5 @@
+K225I
+K225L
+G220V; K225I
+K225T
+starting sequence
