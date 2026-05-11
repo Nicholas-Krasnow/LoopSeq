@@ -1,5 +1,8 @@
 ## LoopSeq analysis repo
 
+**Expected install time:** < 1 hr for code, 1-2 hr for dataset.  
+**Expected computing time:** < 2 hr when samples are run in parallel.
+
 This repository contains scripts + reference FASTAs used to analyze LoopSeq long-read FASTA files, summarize results across samples, and generate the plots committed in this repo.
 
 ### What’s in this repo
