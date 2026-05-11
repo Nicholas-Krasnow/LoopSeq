@@ -169,6 +169,11 @@ Outputs in `plots_mutation_distance_violin/`.
 
 This repo includes a small, downsampled demo FASTA and the corresponding expected analysis outputs so you can quickly verify your setup without processing the full (large) input FASTA files.
 
+Downsampling logic (for reproducibility):
+- We start from the `replicate = 1`, `Starting point = WT/E` demo input FASTA.
+- We identify mutation sets (“genotypes”) with `read_count > 100` from the full analysis for that sample.
+- We then keep only reads that map to those high-read mutation sets, selecting a deterministic 1/10 of them (based on an md5 of the read ID).
+
 #### Demo assets included
 
 The demo lives under:
