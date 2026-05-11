@@ -1,0 +1,1 @@
+reference_fastas/sp24_dna.fa
